@@ -1,0 +1,41 @@
+version: '3.0'
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+intents:
+- quality_video_type
+- streaming_type
+- input
+- hello
+entities:
+- input_entity
+- quality_type
+- streaming_type
+slots:
+  input_entity:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: input_entity
+  streaming_type:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: streaming_type
+  quality_type:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: quality_type
+responses:
+  utter_streaming_type:
+  - text: 'Você deseja baixar o video ou somente o audio? (informe: video ou audio)'
+  utter_quality_video_type:
+  - text: 'Qual a qualidade do video? (informe: low ou high)'
+actions:
+- action_ip
+- utter_quality_video_type
+- utter_streaming_type

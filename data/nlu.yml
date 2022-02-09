@@ -1,0 +1,23 @@
+version: "3.0"
+nlu:
+- intent: input
+  examples: |
+    - "[https://www.youtube.com/watch?v=3swa12Q1zG4](input_entity)"
+    - "[https://www.youtube.com/](input_entity)"
+    - "[https://www.youtube.com/watch?v=UYJyiQUaEOI](input_entity)"
+    - "[https://www.youtube.com/watch?v=t0PsmR6hPMw](input_entity)"
+    - "[https://www.youtube.com/watch?v=TEaiA2al3jA](input_entity)"
+    - "[https://www.youtube.com/watch?v=OS8taasZl8k](input_entity)"
+    - "[https://www.youtube.com/watch?v=QLWC4D7XO0E](input_entity)"
+    - "[https://www.youtube.com/watch?v=uV0kDWbjsf8](input_entity)"
+    - "[https://www.youtube.com/watch?v=uV0kDWbjsf8](input_entity)"
+- intent: streaming_type
+  examples: |
+    - [audio](streaming_type)
+    - [video](streaming_type)
+    - [video](streaming_type)
+- intent: quality_video_type
+  examples: |
+    - [low](quality_type)
+    - [high](quality_type)
+    - [high](quality_type)

@@ -1,0 +1,28 @@
+version: "3.0"
+
+stories:
+
+- story: happy path
+  steps:
+  - intent: input
+  - action: utter_streaming_type
+- story: interactive_story_1
+  steps:
+  - intent: input
+    entities:
+    - input_entity: https://www.youtube.com/watch?v=uV0kDWbjsf8
+  - slot_was_set:
+    - input_entity: https://www.youtube.com/watch?v=uV0kDWbjsf8
+  - action: utter_streaming_type
+  - intent: streaming_type
+    entities:
+    - streaming_type: video
+  - slot_was_set:
+    - streaming_type: video
+  - action: utter_quality_video_type
+  - intent: quality_video_type
+    entities:
+    - quality_type: high
+  - slot_was_set:
+    - quality_type: high
+  - action: action_ip
