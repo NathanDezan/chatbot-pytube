@@ -3,11 +3,12 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
+- audio_type
+- input
 - quality_video_type
 - streaming_type
-- input
-- hello
 entities:
+- audio_type
 - input_entity
 - quality_type
 - streaming_type
@@ -24,6 +25,12 @@ slots:
     mappings:
     - type: from_entity
       entity: streaming_type
+  audio_type:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: audio_type
   quality_type:
     type: text
     influence_conversation: true
