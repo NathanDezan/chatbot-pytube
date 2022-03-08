@@ -105,7 +105,7 @@ class ActionIP(Action):
 
     def uploadAwsMP3():
         file_name = "./download/audio.mp3"
-        bucket = "bot-youtube"
+        bucket = "dcbyc"
         object_name = "audio.mp3"
 
         s3 = boto3.client('s3')
@@ -120,7 +120,7 @@ class ActionIP(Action):
     def publicAwsMP4():
         url = boto3.client('s3').generate_presigned_url(
             ClientMethod='get_object',
-            Params={'Bucket': 'bot-youtube', 'Key': 'archive.mp4'},
+            Params={'Bucket': 'dcbyc', 'Key': 'archive.mp4'},
             ExpiresIn=3600
         )
 
@@ -129,7 +129,7 @@ class ActionIP(Action):
     def publicAwsMP3():
         url = boto3.client('s3').generate_presigned_url(
             ClientMethod='get_object',
-            Params={'Bucket': 'bot-youtube', 'Key': 'audio.mp3'},
+            Params={'Bucket': 'dcbyc', 'Key': 'audio.mp3'},
             ExpiresIn=3600
         )
 

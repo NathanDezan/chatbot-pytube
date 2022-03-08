@@ -33,7 +33,7 @@ pipeline:
     constrain_similarities: true
     #Classifica uma mensagem com a intenção nlu_fallbackse as pontuações de classificação de intenção da NLU forem ambíguas
   - name: FallbackClassifier
-    threshold: 0.3
+    threshold: 0.7
     ambiguity_threshold: 0.1
 
 #Configuração do rasa core

@@ -42,6 +42,8 @@ responses:
   - text: 'Você deseja baixar o video ou somente o audio? (informe: video ou audio)'
   utter_quality_video_type:
   - text: 'Qual a qualidade do video? (informe: low ou high)'
+  utter_please_rephrase:
+  - text: 'Para de zaralhar o bot, e converte sua música logo meo.'
 actions:
 - action_ip
 - utter_quality_video_type
