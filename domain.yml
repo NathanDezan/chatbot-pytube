@@ -3,48 +3,42 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
-- audio_type
-- input
-- quality_video_type
-- streaming_type
+- url_video
+- type_converter
+- resolution_video
 entities:
-- audio_type
-- input_entity
-- quality_type
-- streaming_type
+- resolutions
+- type
+- url_youtube
 slots:
-  input_entity:
+  url_youtube:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
-      entity: input_entity
-  streaming_type:
+      entity: url_youtube
+  type:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
-      entity: streaming_type
-  audio_type:
+      entity: type
+  resolutions:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
-      entity: audio_type
-  quality_type:
-    type: text
-    influence_conversation: true
-    mappings:
-    - type: from_entity
-      entity: quality_type
+      entity: resolutions
 responses:
   utter_streaming_type:
   - text: 'Você deseja baixar o video ou somente o audio? (informe: video ou audio)'
-  utter_quality_video_type:
-  - text: 'Qual a qualidade do video? (informe: low ou high)'
   utter_please_rephrase:
-  - text: 'Para de zaralhar o bot, e converte sua música logo meo.'
+  - text: Para de zaralhar o bot, e converte sua música logo meo.
+  utter_resolutions_stream:
+  - text: 'Informe a resolução desejada, este vídeo possui as seguintes resoluções: {resolutions}'
 actions:
 - action_ip
-- utter_quality_video_type
+- action_list_user_details
 - utter_streaming_type
+- utter_please_rephrase
+- utter_resolutions_stream

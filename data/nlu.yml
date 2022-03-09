@@ -1,25 +1,32 @@
 version: "3.0"
 nlu:
-- intent: input
+- intent: url_video
   examples: |
-    - "[https://www.youtube.com/watch?v=3swa12Q1zG4](input_entity)"
-    - "[https://www.youtube.com/](input_entity)"
-    - "[https://www.youtube.com/watch?v=UYJyiQUaEOI](input_entity)"
-    - "[https://www.youtube.com/watch?v=t0PsmR6hPMw](input_entity)"
-    - "[https://www.youtube.com/watch?v=TEaiA2al3jA](input_entity)"
-    - "[https://www.youtube.com/watch?v=OS8taasZl8k](input_entity)"
-    - "[https://www.youtube.com/watch?v=QLWC4D7XO0E](input_entity)"
-    - "[https://www.youtube.com/watch?v=uV0kDWbjsf8](input_entity)"
-    - [https://www.youtube.com/watch?v=YDDz1Er2IXA](input_entity)
-    - [https://www.youtube.com/watch?v=SEbxwmjScr8](input_entity)
-- intent: streaming_type
+    - [https://www.youtube.com/watch?v=3swa12Q1zG4](url_youtube)
+    - [https://www.youtube.com/](url_youtube)
+    - [https://www.youtube.com/watch?v=UYJyiQUaEOI](url_youtube)
+    - [https://www.youtube.com/watch?v=t0PsmR6hPMw](url_youtube)
+    - [https://www.youtube.com/watch?v=TEaiA2al3jA](url_youtube)
+    - [https://www.youtube.com/watch?v=OS8taasZl8k](url_youtube)
+    - [https://www.youtube.com/watch?v=QLWC4D7XO0E](url_youtube)
+    - [https://www.youtube.com/watch?v=uV0kDWbjsf8](url_youtube)
+    - [https://www.youtube.com/watch?v=YDDz1Er2IXA](url_youtube)
+    - [https://www.youtube.com/watch?v=SEbxwmjScr8](url_youtube)
+    - [https://www.youtube.com/watch?v=tSP4H-jgdW4](url_youtube)
+- intent: type_converter
   examples: |
-    - [video](streaming_type)
-- intent: audio_type
+    - [video](type)
+    - [audio](type)
+    - [video](type)
+- intent: resolution_video
   examples: |
-    - [audio](audio_type)
-    - [audio](audio_type)
-- intent: quality_video_type
-  examples: |
-    - [low](quality_type)
-    - [high](quality_type)
+    - [144p](resolutions)
+    - [240p](resolutions)
+    - [360p](resolutions)
+    - [480p](resolutions)
+    - [720p](resolutions)
+    - [1080p](resolutions)
+    - [1440p](resolutions)
+    - [2160p](resolutions)
+    - [4320p](resolutions)
+    - [1080p](resolutions)

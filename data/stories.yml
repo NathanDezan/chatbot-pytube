@@ -4,57 +4,21 @@ stories:
 
 - story: interactive_story_1
   steps:
-  - intent: input
+  - intent: url_video
     entities:
-    - input_entity: https://www.youtube.com/watch?v=YDDz1Er2IXA
+    - url_youtube: https://www.youtube.com/watch?v=tSP4H-jgdW4
   - slot_was_set:
-    - input_entity: https://www.youtube.com/watch?v=YDDz1Er2IXA
+    - url_youtube: https://www.youtube.com/watch?v=tSP4H-jgdW4
   - action: utter_streaming_type
-  - intent: streaming_type
+  - intent: type_converter
     entities:
-    - streaming_type: video
+    - type: video
   - slot_was_set:
-    - streaming_type: video
-  - action: utter_quality_video_type
-  - intent: quality_video_type
+    - type: video
+  - action: action_list_user_details
+  - intent: resolution_video
     entities:
-    - quality_type: low
+    - resolutions: 1080p
   - slot_was_set:
-    - quality_type: low
-  - action: action_ip
-
-- story: interactive_story_2
-  steps:
-  - intent: input
-    entities:
-    - input_entity: https://www.youtube.com/watch?v=YDDz1Er2IXA
-  - slot_was_set:
-    - input_entity: https://www.youtube.com/watch?v=YDDz1Er2IXA
-  - action: utter_streaming_type
-  - intent: streaming_type
-    entities:
-    - streaming_type: video
-  - slot_was_set:
-    - streaming_type: video
-  - action: utter_quality_video_type
-  - intent: quality_video_type
-    entities:
-    - quality_type: high
-  - slot_was_set:
-    - quality_type: high
-  - action: action_ip
-
-- story: interactive_story_3
-  steps:
-  - intent: input
-    entities:
-    - input_entity: https://www.youtube.com/watch?v=YDDz1Er2IXA
-  - slot_was_set:
-    - input_entity: https://www.youtube.com/watch?v=YDDz1Er2IXA
-  - action: utter_streaming_type
-  - intent: audio_type
-    entities:
-    - audio_type: audio
-  - slot_was_set:
-    - audio_type: audio
+    - resolutions: 1080p
   - action: action_ip
