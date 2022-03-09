@@ -1,29 +1,56 @@
-# import pytube
-# import os
-# import moviepy.editor as mp
-import boto3
+from logging import exception
+from pydoc import describe
+import pytube
+import os
+import moviepy.editor as mp
+# import boto3
+import re
 
-# url = "https://www.youtube.com/watch?v=YDDz1Er2IXA"
+url = "https://www.youtube.com/watch?v=YDDz1Er2IXA"
+url2 = 'https://www.youtube.com/watch?v=1La4QzGeaaQ'
+url3 = 'https://www.youtube.com/watch?v=Cw_xqTgP_J8'
+url4 = 'https://www.youtube.com/watch?v=VAe0WHRgDkM'
+url5 = 'https://www.youtube.com/watch?v=W-hcGwW-YYQ'
 
 # video = pytube.YouTube(url)
-# video.streams\
-#     .filter(progressive=False, file_extension="mp4")\
-#     .get_lowest_resolution()\
-#     .download(output_path='./download', filename="archive.mp4")
+# print(video.title)
 
-# mp4_file = r'./download/archive.mp4'
-# mp3_file = r'./download/audio.mp3'
+def convertMP3(url):
+    file_archive = 'mp4'
+    path_archive = './download/mp3/'
+    name_function = convertMP3.__name__
+    progressive_filter = 'False'
 
-# clip = mp.VideoFileClip(mp4_file)
-# clip.audio.write_audiofile(mp3_file)
+    try:
+        video = pytube.YouTube(url)
+        video.streams\
+            .filter(progressive=progressive_filter, file_extension=file_archive)\
+            .first()\
+            .download(output_path=path_archive, filename='teste.mp4')
+        print('Success in ' + name_function)
+    except:
+        print('Error in ' + name_function)
+        return None
+    return video.title
 
-def publicAwsMP3():
-    url = boto3.client('s3').generate_presigned_url(
-        ClientMethod='get_object',
-        Params={'Bucket': 'bot-youtube', 'Key': 'audio.mp3'},
-        ExpiresIn=3600
-    )
+def remove_Emoji(text):
+    name_function = remove_Emoji.__name__
 
-    return url
+    try:
+        emoji_pattern = re.compile("["
+        u"\U0001F600-\U0001F64F"  # emoticons
+        u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+        u"\U0001F680-\U0001F6FF"  # transport & map symbols
+        u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                        "]+", flags=re.UNICODE)
+        print('Success in ' + name_function)
 
-print(publicAwsMP3())
+        text_format = emoji_pattern.sub(r'', text)
+        text_format = re.sub(' +', ' ', text_format)
+    except:
+        print('Error in ' + name_function)
+        return None
+    return text_format
+
+title_video = convertMP3(url5)
+print(remove_Emoji(title_video))
