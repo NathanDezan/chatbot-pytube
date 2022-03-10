@@ -12,46 +12,54 @@ url3 = 'https://www.youtube.com/watch?v=Cw_xqTgP_J8'
 url4 = 'https://www.youtube.com/watch?v=VAe0WHRgDkM'
 url5 = 'https://www.youtube.com/watch?v=W-hcGwW-YYQ'
 
-def convertAudio(url):
-    format_archive = 'mp4'
-    path_archive = './download/mp3/'
-    name_function = convertAudio.__name__
-    name_archive = ''
 
-    try:
-        video = pytube.YouTube(url)
-        name_archive = removeEmoji(video.title)
-        print(name_archive)
-        video.streams\
-            .filter(file_extension=format_archive)\
-            .first()\
-            .download(output_path=path_archive, filename=name_archive + '.' + format_archive)
-        print('Success in ' + name_function)
-    except:
-        print('Error in ' + name_function)
-        return None
-    return name_archive
+video = pytube.YouTube(url)
+video.streams\
+    .filter(file_extension='mp4')\
+    .first()\
+    .download(output_path='./download', filename='teste.mp4')
 
-def removeEmoji(text):
-    name_function = removeEmoji.__name__
+# def convertAudio(url):
+#     format_archive = 'mp4'
+#     path_archive = './download/mp3/'
+#     name_function = convertAudio.__name__
+#     name_archive = ''
 
-    try:
-        emoji_pattern = re.compile("["
-        u"\U0001F600-\U0001F64F"  # emoticons
-        u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-        u"\U0001F680-\U0001F6FF"  # transport & map symbols
-        u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                        "]+", flags=re.UNICODE)
+#     try:
+#         video = pytube.YouTube(url)
+#         name_archive = removeEmoji(video.title)
+#         print(name_archive)
+#         video.streams\
+#             .filter(file_extension=format_archive)\
+#             .first()\
+#             .download(output_path=path_archive, filename=name_archive + '.' + format_archive)
+#         print('Success in ' + name_function)
+#     except:
+#         print('Error in ' + name_function)
+#         return None
+#     return name_archive
 
-        text_format = emoji_pattern.sub(r'', text)
-        text_format = re.sub(' +', ' ', text_format)
-        print('Success in ' + name_function)
-    except:
-        print('Error in ' + name_function)
-        return None
-    return text_format
+# def removeEmoji(text):
+#     name_function = removeEmoji.__name__
 
-convertAudio(url2)
+#     try:
+#         emoji_pattern = re.compile("["
+#         u"\U0001F600-\U0001F64F"  # emoticons
+#         u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+#         u"\U0001F680-\U0001F6FF"  # transport & map symbols
+#         u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+#                         "]+", flags=re.UNICODE)
+
+#         text_format = emoji_pattern.sub(r'', text)
+#         text_format = re.sub(' +', ' ', text_format)
+#         text_format = text_format.replace('"', '')
+#         print('Success in ' + name_function)
+#     except:
+#         print('Error in ' + name_function)
+#         return None
+#     return text_format
+
+# convertAudio(url)
 
 # video = pytube.YouTube(url)
 # print(video.title)

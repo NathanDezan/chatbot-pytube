@@ -4,7 +4,6 @@ from typing import Any, Text, Dict, List
 import moviepy.editor as mp
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
-from rasa_sdk.events import SlotSet
 from pytube import YouTube
 import sys
 import boto3
@@ -17,36 +16,44 @@ class ConverterMain(Action):
         return "action_converter_main"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        resp = ""
+        resp = ''
+        type_converter = ''
         url = tracker.get_slot('url_youtube')
-        type_converter = tracker.get_slot('type')
+        type_converter_video = tracker.get_slot('type_video')
+        type_converter_audio = tracker.get_slot('type_audio')
         resolution = tracker.get_slot('resolutions')
 
-        resp = ConverterMain.execute_main(type_converter, url, resolution)
+        if type_converter_video == 'video':
+            type_converter = 'video'
+
+        if type_converter_audio == 'audio':
+            type_converter = 'audio'
+
+        if type_converter_audio != 'audio' and type_converter_video != 'video':
+            type_converter = None
+
+        resp, video_title = ConverterMain.execute_main(type_converter, url, resolution)
         dispatcher.utter_message(resp)
+        ConverterMain.removeFiles(video_title)
 
         return []
     
     def execute_main(type, url, quality):
+
         if type == 'audio':
             video_title = ConverterMain.convertAudio(url)
             ConverterMain.convertMP4toMP3(video_title)
             ConverterMain.uploadAwsMP3(video_title)
-            ConverterMain.removeFiles(video_title)
-            return ConverterMain.publicAwsMP3(video_title)
-        
-        elif type == 'video':
-            video_title, trigger = ConverterMain.convertVideo(url, quality)
-            if trigger == True:
-                ConverterMain.uploadAwsMP4(video_title)
-                return ConverterMain.publicAwsMP4(video_title)
+            return ConverterMain.publicAwsMP3(video_title), video_title
+
+        if type == 'video':
+            video_title = ConverterMain.convertVideo(url, quality)
             ConverterMain.convertMP4toMP3(video_title)
             ConverterMain.createVideo(video_title)
             ConverterMain.uploadAwsMP4(video_title)
-            ConverterMain.removeFiles(video_title)
-            return ConverterMain.publicAwsMP4(video_title)
+            return ConverterMain.publicAwsMP4(video_title), video_title
         
-        else:
+        if type == None:
             return 'Por favor entre com um valor valido!'
 
     #Funções de conversão de audio
@@ -126,12 +133,6 @@ class ConverterMain(Action):
         try:
             video = YouTube(url)
             formatted_name = ConverterMain.removeEmoji(video.title)
-            if quality == '360p' or quality == '720p':
-                video.streams\
-                    .filter(progressive=False, file_extension=file_format_video, res=quality)\
-                    .first()\
-                    .download(output_path=path_file_video, filename=formatted_name + '.' + file_format_video)
-                return formatted_name, True
             #Baixa o arquivo em vídeo
             video.streams\
                 .filter(progressive=False, file_extension=file_format_video, res=quality)\
@@ -145,7 +146,7 @@ class ConverterMain(Action):
             print('Success in ' + function_name)
         except:
             print('Error in ' + function_name)
-        return formatted_name, False
+        return formatted_name
 
     def createVideo(video_title):
         path_video = './download/mp4/' + video_title + '.mp4'
@@ -206,6 +207,15 @@ class ConverterMain(Action):
 
             text_format = emoji_pattern.sub(r'', text)
             text_format = re.sub(' +', ' ', text_format)
+            text_format = text_format.replace('"', '')
+            text_format = text_format.replace('\\', '')
+            text_format = text_format.replace('/', '')
+            text_format = text_format.replace(':', '')
+            text_format = text_format.replace('*', '')
+            text_format = text_format.replace('?', '')
+            text_format = text_format.replace('<', '')
+            text_format = text_format.replace('>', '')
+            text_format = text_format.replace('|', '')
             print('Success in ' + name_function)
         except:
             print('Error in ' + name_function)

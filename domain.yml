@@ -3,13 +3,15 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
+- video_converter
+- audio_converter
 - start_conversation
-- type_converter
-- url_video
 - resolution_video
+- url_video
 entities:
 - resolutions
-- type
+- type_video
+- type_audio
 - url_youtube
 slots:
   url_youtube:
@@ -18,12 +20,18 @@ slots:
     mappings:
     - type: from_entity
       entity: url_youtube
-  type:
+  type_video:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
-      entity: type
+      entity: type_video
+  type_audio:
+    type: text 
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: type_audio
   resolutions:
     type: text
     influence_conversation: true
@@ -44,4 +52,5 @@ actions:
 - action_list_resolutions
 - utter_correction
 - utter_first_conversation
+- utter_resolutions_stream
 - utter_streaming_type
