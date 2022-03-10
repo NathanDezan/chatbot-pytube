@@ -4,4 +4,8 @@ rules:
 - rule: Zaralhando o bot
   steps:
   - intent: nlu_fallback
-  - action: utter_please_rephrase
+  - action: utter_correction
+- rule: Primeira interação
+  steps:
+  - intent: start_conversation
+  - action: utter_first_conversation

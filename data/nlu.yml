@@ -13,11 +13,14 @@ nlu:
     - [https://www.youtube.com/watch?v=YDDz1Er2IXA](url_youtube)
     - [https://www.youtube.com/watch?v=SEbxwmjScr8](url_youtube)
     - [https://www.youtube.com/watch?v=tSP4H-jgdW4](url_youtube)
+    - [https://www.youtube.com/watch?v=FUp99_V2wjQ](url_youtube)
+    - [https://www.youtube.com/watch?v=e2ivrTBmrhw](url_youtube)
+    - [https://www.youtube.com/watch?v=Ctbca8z-uGs](url_youtube)
 - intent: type_converter
   examples: |
     - [video](type)
     - [audio](type)
-    - [video](type)
+    - [audio](type)
 - intent: resolution_video
   examples: |
     - [144p](resolutions)
@@ -29,4 +32,8 @@ nlu:
     - [1440p](resolutions)
     - [2160p](resolutions)
     - [4320p](resolutions)
-    - [1080p](resolutions)
+- intent: start_conversation
+  examples: |
+    - /
+    - /start
+    - start

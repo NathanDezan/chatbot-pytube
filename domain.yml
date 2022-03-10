@@ -3,8 +3,9 @@ session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
 intents:
-- url_video
+- start_conversation
 - type_converter
+- url_video
 - resolution_video
 entities:
 - resolutions
@@ -32,13 +33,15 @@ slots:
 responses:
   utter_streaming_type:
   - text: 'Você deseja baixar o video ou somente o audio? (informe: video ou audio)'
-  utter_please_rephrase:
+  utter_correction:
   - text: Para de zaralhar o bot, e converte sua música logo meo.
   utter_resolutions_stream:
-  - text: 'Informe a resolução desejada, este vídeo possui as seguintes resoluções: {resolutions}'
+  - text: 'Informe a resolução desejada, este vídeo possui as seguintes resoluções: {resolutions}. Para resoluções acima de 1080p, o arquivo pode levar aproximadamente 20 minutos para estar disponível.'
+  utter_first_conversation:
+  - text: 'Olá! Informe a URL do vídeo o qual deseja converter. Exemplo: https://www.youtube.com/watch?v=kI-Wxz89FTA'
 actions:
-- action_ip
-- action_list_user_details
+- action_converter_main
+- action_list_resolutions
+- utter_correction
+- utter_first_conversation
 - utter_streaming_type
-- utter_please_rephrase
-- utter_resolutions_stream
