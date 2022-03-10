@@ -9,11 +9,12 @@ from pytube import YouTube
 import sys
 import boto3
 import re
+import os
 
-class ActionIP(Action):
+class ConverterMain(Action):
 
     def name(self) -> Text:
-        return "action_ip"
+        return "action_converter_main"
 
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         resp = ""
@@ -21,64 +22,45 @@ class ActionIP(Action):
         type_converter = tracker.get_slot('type')
         resolution = tracker.get_slot('resolutions')
 
-        resp = ActionIP.execute_main(type_converter, url, resolution)
+        resp = ConverterMain.execute_main(type_converter, url, resolution)
         dispatcher.utter_message(resp)
 
         return []
     
     def execute_main(type, url, quality):
-        if type == "audio":
-            video_title = ActionIP.convertMP3(url)
-            ActionIP.convertMP4toMP3(video_title)
-            ActionIP.uploadAwsMP3(video_title)
-            return ActionIP.publicAwsMP3(video_title)
+        if type == 'audio':
+            video_title = ConverterMain.convertAudio(url)
+            ConverterMain.convertMP4toMP3(video_title)
+            ConverterMain.uploadAwsMP3(video_title)
+            ConverterMain.removeFiles(video_title)
+            return ConverterMain.publicAwsMP3(video_title)
         
-        # if type =="video":
-        #     ActionIP.convertStream(url, quality, "mp4")
-        #     ActionIP.convertMP4toMP3()
-        #     ActionIP.uploadAwsMP4()
-        #     return ActionIP.publicAwsMP4()
-
-    def convertMP4toMP3(video_title):
-        mp4_file = r'./download/mp3/' + video_title + '.mp4'
-        mp3_file = r'./download/mp3/' + video_title + '.mp3'
-        function_name = ActionIP.convertMP4toMP3.__name__
+        elif type == 'video':
+            video_title, trigger = ConverterMain.convertVideo(url, quality)
+            if trigger == True:
+                ConverterMain.uploadAwsMP4(video_title)
+                return ConverterMain.publicAwsMP4(video_title)
+            ConverterMain.convertMP4toMP3(video_title)
+            ConverterMain.createVideo(video_title)
+            ConverterMain.uploadAwsMP4(video_title)
+            ConverterMain.removeFiles(video_title)
+            return ConverterMain.publicAwsMP4(video_title)
         
-        try:
-            clip = mp.VideoFileClip(mp4_file)
-            clip.audio.write_audiofile(mp3_file)
-
-            print('Success in ' + function_name)
-        except:
-            print('Error in ' + function_name)
-
-
-    def convertStream(url, quality, format):
-        try:
-            video = YouTube(url)
-            video.streams\
-                .filter(progressive=False, file_extension=format, res=quality)\
-                .first()\
-                .download(output_path='./download/video/')
-            audio = video.filter(type = "audio")
-            audio\
-                .first()\
-                .download("./download/audio/")
-        except EOFError as error:
-            print("Ocorreu um erro!!\n" + error)
         else:
-            print("\nDownload finalizado!!")
+            return 'Por favor entre com um valor valido!'
 
-    def convertMP3(url):
+    #Funções de conversão de audio
+    def convertAudio(url):
         format_archive = 'mp4'
         path_archive = './download/mp3/'
-        name_function = ActionIP.convertMP3.__name__
+        name_function = ConverterMain.convertAudio.__name__
         progressive_filter = 'False'
         name_archive = ''
 
         try:
             video = YouTube(url)
-            name_archive = ActionIP.remove_Emoji(video.title)
+            name_archive = ConverterMain.removeEmoji(video.title)
+            print(name_archive)
             video.streams\
                 .filter(progressive=progressive_filter, file_extension=format_archive)\
                 .first()\
@@ -89,21 +71,21 @@ class ActionIP(Action):
             return None
         return name_archive
 
-    def uploadAwsMP4():
-        file_name = "./download/archive.mp4"
-        bucket = "bot-youtube"
-        object_name = "archive.mp4"
-
-        s3 = boto3.client('s3')
-
+    def convertMP4toMP3(video_title):
+        mp4_file = r'./download/mp3/' + video_title + '.mp4'
+        mp3_file = r'./download/mp3/' + video_title + '.mp3'
+        function_name = ConverterMain.convertMP4toMP3.__name__
+        
         try:
-            response = s3.upload_file(file_name, bucket, object_name)
+            clip = mp.VideoFileClip(mp4_file)
+            clip.audio.write_audiofile(mp3_file)
+
+            print('Success in ' + function_name)
         except:
-            print()
-        return True
+            print('Error in ' + function_name)
 
     def uploadAwsMP3(video_title):
-        name_function = ActionIP.uploadAwsMP3.__name__
+        name_function = ConverterMain.uploadAwsMP3.__name__
         name_format = video_title + '.mp3'
         file_name = './download/mp3/' + name_format
         bucket = 'dcbyc'
@@ -119,7 +101,7 @@ class ActionIP(Action):
 
     def publicAwsMP3(video_title):
         name_format = video_title + '.mp3'
-        name_function = ActionIP.publicAwsMP3.__name__
+        name_function = ConverterMain.publicAwsMP3.__name__
         bucket = 'dcbyc'
         try:
             url = boto3.client('s3').generate_presigned_url(
@@ -133,17 +115,86 @@ class ActionIP(Action):
             return None
         return url
 
-    def publicAwsMP4():
-        url = boto3.client('s3').generate_presigned_url(
-            ClientMethod='get_object',
-            Params={'Bucket': 'dcbyc', 'Key': 'archive.mp4'},
-            ExpiresIn=3600
-        )
+    #Funções de conversão de video
+    def convertVideo(url, quality):
+        function_name = ConverterMain.convertVideo.__name__
+        file_format_video = 'mp4'
+        formatted_name = ''
+        path_file_video = './download/mp4/'
+        path_file_audio = './download/mp3/'
 
+        try:
+            video = YouTube(url)
+            formatted_name = ConverterMain.removeEmoji(video.title)
+            if quality == '360p' or quality == '720p':
+                video.streams\
+                    .filter(progressive=False, file_extension=file_format_video, res=quality)\
+                    .first()\
+                    .download(output_path=path_file_video, filename=formatted_name + '.' + file_format_video)
+                return formatted_name, True
+            #Baixa o arquivo em vídeo
+            video.streams\
+                .filter(progressive=False, file_extension=file_format_video, res=quality)\
+                .first()\
+                .download(output_path=path_file_video, filename=formatted_name + '.' + file_format_video)
+            #Baixa o audio do vídeo
+            video.streams\
+                .filter(file_extension=file_format_video)\
+                .first()\
+                .download(output_path=path_file_audio, filename=formatted_name + '.' + file_format_video)
+            print('Success in ' + function_name)
+        except:
+            print('Error in ' + function_name)
+        return formatted_name, False
+
+    def createVideo(video_title):
+        path_video = './download/mp4/' + video_title + '.mp4'
+        path_audio = './download/mp3/' + video_title + '.mp3'
+        function_name = ConverterMain.createVideo.__name__
+
+        try:
+            videoclip = mp.VideoFileClip(path_video)
+            audio_clip = mp.AudioFileClip(path_audio)
+            new_audioclip = mp.CompositeAudioClip([audio_clip])
+            videoclip.audio = new_audioclip
+            videoclip.write_videofile('./download/' + video_title + '.mp4')
+            print('Success in ' + function_name)
+        except:
+            print('Error in ' + function_name)
+
+    def uploadAwsMP4(video_title):
+        file_name = './download/' + video_title + '.mp4'
+        bucket = 'dcbyc'
+        object_name = video_title + '.mp4'
+        function_name = ConverterMain.uploadAwsMP4.__name__
+
+        s3 = boto3.client('s3')
+
+        try:
+            response = s3.upload_file(file_name, bucket, object_name)
+            print('Success in ' + function_name)
+        except:
+            print('Error in ' + function_name)
+
+    def publicAwsMP4(video_title):
+        function_name = ConverterMain.publicAwsMP4.__name__
+        name_format = video_title + '.mp4'
+        bucket = 'dcbyc'
+        try:
+            url = boto3.client('s3').generate_presigned_url(
+                ClientMethod='get_object',
+                Params={'Bucket': bucket, 'Key': name_format},
+                ExpiresIn=3600
+            )
+            print('Success in ' + function_name)
+        except:
+            print('Error in ' + function_name)
+            return None
         return url
     
-    def remove_Emoji(text):
-        name_function = ActionIP.remove_Emoji.__name__
+    #Funções auxiliares
+    def removeEmoji(text):
+        name_function = ConverterMain.removeEmoji.__name__
 
         try:
             emoji_pattern = re.compile("["
@@ -161,16 +212,40 @@ class ActionIP(Action):
             return None
         return text_format
     
-class ListUserDetails(Action):
+    def removeFiles(video_title):
+        path_video = './download/mp4/' + video_title + '.mp4'
+        path_audio = './download/mp3/' + video_title
+        path_last_file = './download/' + video_title + '.mp4'
+        function_name = ConverterMain.removeFiles.__name__
+
+        try:
+            #Remove o arquivo de video no path mp4/
+            if os.path.exists(path_video):
+                os.remove(path_video)
+            
+            #Remove o arquivo de audio no path mp3/archive.mp3
+            if os.path.exists(path_audio + '.mp3'):
+                os.remove(path_audio + '.mp3')
+            
+            if os.path.exists(path_audio + '.mp4'):
+                os.remove(path_audio + '.mp4')
+            
+            if os.path.exists(path_last_file):
+                os.remove(path_last_file)
+            
+            print('Success in ' + function_name)
+        except:
+            print('Error in ' + function_name)
+
+class ListResolutions(Action):
   
     def name(self) -> Text:
-        # Name of the action mentioned in the domain.yml file
-        return "action_list_user_details"
+        return "action_list_resolutions"
   
     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        url = tracker.get_slot('input_entity')
+        url = tracker.get_slot('url_youtube')
 
-        list_resolutions = ListUserDetails.get_resolutions(url)
+        list_resolutions = ListResolutions.get_resolutions(url)
 
         dispatcher.utter_message(
             template='utter_resolutions_stream',
@@ -180,20 +255,25 @@ class ListUserDetails(Action):
         return []
     
     def get_resolutions(url):
-        video = YouTube(url)
         res_exist = {'144p': False, '240p': False, '360p': False, '480p': False, '720p': False, '1080p': False, '1440p': False, '2160p': False, '4320p': False}
         resolutions_list = list()
+        function_name = ListResolutions.get_resolutions.__name__
 
-        describe_tube = video.streams.all()
+        try:
+            video = YouTube(url)
+            describe_tube = video.streams.all()
 
-        for i in describe_tube:
-            for j in res_exist:
-                res_string = str(i.resolution)
-                if res_string == j:
-                    res_exist[j] = True
+            for i in describe_tube:
+                for j in res_exist:
+                    res_string = str(i.resolution)
+                    if res_string == j:
+                        res_exist[j] = True
 
-        for i in res_exist:
-            if res_exist[i] == True:
-                resolutions_list.append(i)
-
+            for i in res_exist:
+                if res_exist[i] == True:
+                    resolutions_list.append(i)
+            print('Success in ' + function_name)
+        except:
+            print('Error in ' + function_name)
+            return None
         return resolutions_list
