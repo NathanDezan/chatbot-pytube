@@ -16,12 +16,9 @@ stories:
   - slot_was_set:
     - type_audio: audio
   - action: action_converter_main
-  - action: action_restart
-
+  
 - story: interactive_story_2
   steps:
-  - intent: start_conversation
-  - action: utter_first_conversation
   - intent: url_video
     entities:
     - url_youtube: https://www.youtube.com/watch?v=Uc7apOxd1tg
@@ -33,11 +30,5 @@ stories:
     - type_video: video
   - slot_was_set:
     - type_video: video
-  - action: action_list_resolutions
-  - intent: resolution_video
-    entities:
-    - resolutions: 1080p
-  - slot_was_set:
-    - resolutions: 1080p
+  - action: utter_resolutions_stream
   - action: action_converter_main
-  - action: action_restart

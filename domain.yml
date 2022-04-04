@@ -6,10 +6,8 @@ intents:
 - video_converter
 - audio_converter
 - start_conversation
-- resolution_video
 - url_video
 entities:
-- resolutions
 - type_video
 - type_audio
 - url_youtube
@@ -32,24 +30,17 @@ slots:
     mappings:
     - type: from_entity
       entity: type_audio
-  resolutions:
-    type: text
-    influence_conversation: true
-    mappings:
-    - type: from_entity
-      entity: resolutions
 responses:
   utter_streaming_type:
   - text: 'Você deseja baixar o video ou somente o audio? (informe: video ou audio)'
   utter_correction:
   - text: Para de zaralhar o bot, e converte sua música logo meo.
   utter_resolutions_stream:
-  - text: 'Informe a resolução desejada, este vídeo possui as seguintes resoluções: {resolutions}. Para resoluções acima de 1080p, o arquivo pode levar aproximadamente 20 minutos para estar disponível.'
+  - text: 'Por padrão o video será em 720p, caso a qualidade não esteja disponível o download será feito em 360p'
   utter_first_conversation:
   - text: 'Olá! Informe a URL do vídeo o qual deseja converter. Exemplo: https://www.youtube.com/watch?v=kI-Wxz89FTA'
 actions:
 - action_converter_main
-- action_list_resolutions
 - utter_correction
 - utter_first_conversation
 - utter_resolutions_stream

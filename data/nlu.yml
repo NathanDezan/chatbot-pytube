@@ -22,21 +22,17 @@ nlu:
 - intent: video_converter
   examples: |
     - [video](type_video)
+    - [Vídeo](type_video)
+    - [V](type_video)
+    - [v](type_video)
+    - [Video](type_video)
 - intent: audio_converter
   examples: |
     - [audio](type_audio)
-- intent: resolution_video
-  examples: |
-    - [144p](resolutions)
-    - [240p](resolutions)
-    - [360p](resolutions)
-    - [480p](resolutions)
-    - [720p](resolutions)
-    - [1080p](resolutions)
-    - [1440p](resolutions)
-    - [2160p](resolutions)
-    - [4320p](resolutions)
-    - [1080p](resolutions)
+    - [Áudio](type_audio)
+    - [A](type_audio)
+    - [a](type_audio)
+    - [Audio](type_audio)
 - intent: start_conversation
   examples: |
     - /
